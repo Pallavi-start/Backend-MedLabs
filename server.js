@@ -1,28 +1,26 @@
+require('dotenv').config(); // load env variables
+
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 
 const enquiryRoutes = require('./routes/enquiryRoutes');
 const submitRoutes = require('./routes/submit');
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
-// MongoDB Connection
-mongoose.connect('mongodb://localhost:27017/admissions', {
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-.then(() => console.log('✅ MongoDB connected'))
-.catch(err => console.error('❌ MongoDB connection error:', err));
+.then(() => console.log('✅ Connected to MongoDB Atlas'))
+.catch(err => console.error('❌ MongoDB Atlas connection error:', err));
 
-// ✅ Routes
 app.use('/api/enquiry', enquiryRoutes);
-app.use('/api/submit', submitRoutes); // ✅ Using the modular route
+app.use('/api/submit', submitRoutes);
 
-// Start server
 app.listen(5000, () => {
   console.log('🚀 Server running on http://localhost:5000');
 });
