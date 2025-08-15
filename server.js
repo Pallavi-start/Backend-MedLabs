@@ -1,38 +1,47 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const path = require('path');
-const enquiryRoutes = require('./routes/enquiryRoutes');
-const submitRoutes = require('./routes/submit');
+
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import path from 'path';
+import fs from 'fs';
+
+dotenv.config();
 
 const app = express();
-app.use(cors());
+const PORT = process.env.PORT || 5000;
+
+// Middleware
 app.use(express.json());
+app.use(cors());
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log('✅ Connected to MongoDB Atlas'))
-.catch(err => console.error('❌ MongoDB Atlas connection error:', err));
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('✅ Connected to MongoDB Atlas'))
+  .catch(err => console.error('❌ MongoDB connection error:', err));
 
-// API routes
-app.get('/api', (req, res) => res.json({ message: 'Hello from backend!' }));
-app.use('/api/enquiry', enquiryRoutes);
-app.use('/api/submit', submitRoutes);
+// API routes example
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'API is working!' });
+});
 
-// Serve React in production
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../frontend/build')));
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
-    });
+// Serve frontend if it exists
+const __dirnameFull = path.resolve();
+const buildPath = path.join(__dirnameFull, 'frontend', 'build', 'index.html');
+
+if (fs.existsSync(buildPath)) {
+  app.use(express.static(path.join(__dirnameFull, 'frontend', 'build')));
+  app.get('*', (req, res) => {
+    res.sendFile(buildPath);
+  });
+} else {
+  // Fallback for when build does not exist (Render backend only mode)
+  app.get('*', (req, res) => {
+    res.send('✅ Backend is running. No frontend build found.');
+  });
 }
 
 // Start server
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
