@@ -1,16 +1,16 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const EnquirySchema = new mongoose.Schema({
   name: String,
-  phone: String,
   email: String,
+  phone: String,
   role: String,
   affiliationType: String,
   institute: String,
   state: String,
   district: String
-} ,{
-  timestamps: true
 });
 
-module.exports = mongoose.model('Enquiry', EnquirySchema);
+const Enquiry = mongoose.model('Enquiry', EnquirySchema);
+export default Enquiry; // ✅ default export
+

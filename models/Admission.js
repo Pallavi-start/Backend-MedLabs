@@ -1,12 +1,13 @@
-// models/Admission.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const admissionSchema = new mongoose.Schema({
+const AdmissionSchema = new mongoose.Schema({
   name: String,
   email: String,
   phone: String,
-  campus: String,
-  submittedAt: { type: Date, default: Date.now }
+  campus: String
+  // add other fields if needed
 });
 
-module.exports = mongoose.model('Admission', admissionSchema);
+// ✅ Use default export
+const Admission = mongoose.model('Admission', AdmissionSchema);
+export default Admission;
