@@ -27,19 +27,19 @@ app.get('/api/test', (req, res) => {
 
 // Serve frontend if it exists
 const __dirnameFull = path.resolve();
-const buildPath = path.join(__dirnameFull, 'frontend', 'build', 'index.html');
+const buildPath = path.join(__dirnameFull, 'build', 'index.html');
 
 if (fs.existsSync(buildPath)) {
-  app.use(express.static(path.join(__dirnameFull, 'frontend', 'build')));
+  app.use(express.static(path.join(__dirnameFull, 'build')));
   app.get('*', (req, res) => {
     res.sendFile(buildPath);
   });
 } else {
-  // Fallback for when build does not exist (Render backend only mode)
   app.get('*', (req, res) => {
     res.send('✅ Backend is running. No frontend build found.');
   });
 }
+
 
 // Start server
 app.listen(PORT, () => {
